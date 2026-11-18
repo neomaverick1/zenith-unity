@@ -26,3 +26,6 @@ crashlytics-build.properties
 .vs/
 .idea/
 .DS_Store
+
+# temporary native build files
+/.utmp/

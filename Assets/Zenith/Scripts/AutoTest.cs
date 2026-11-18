@@ -37,7 +37,7 @@ namespace Zenith
             yield return null;
         }
 
-        static Game Board(int n, int[,] values, int score = 0, bool won = false)
+        static Game Board(int n, int[,] values, int score = 0, bool won = false, int moves = 0)
         {
             var g = Engine.NewGame(Mode.Classic, n, 7);
             g.tiles.Clear();
@@ -49,6 +49,8 @@ namespace Zenith
             g.nextId = id;
             g.best = Engine.MaxTile(g);
             g.score = score;
+            g.moves = moves;
+            g.merges = Math.Max(0, moves - 12);
             g.won = won;
             g.keepGoing = won;
             g.over = !Engine.CanMove(g);
@@ -99,7 +101,7 @@ namespace Zenith
             yield return Shot("06-play-stars", 1.6f);
 
             // a supernova
-            p.Load(Board(4, new[,] { { 1024, 1024, 0, 0 }, { 512, 256, 128, 64 }, { 4, 8, 16, 32 }, { 2, 0, 0, 2 } }, 20480));
+            p.Load(Board(4, new[,] { { 1024, 1024, 0, 0 }, { 512, 256, 128, 64 }, { 4, 8, 16, 32 }, { 2, 0, 0, 2 } }, 20480, false, 936));
             yield return new WaitForSecondsRealtime(1.2f);
             p.Act(Dir.Left);
             yield return Shot("07-nova-burst", 0.35f);
@@ -111,7 +113,7 @@ namespace Zenith
             app.StartMode(Mode.Zen);
             yield return new WaitForSecondsRealtime(1.2f);
             p = app.CurrentPlay;
-            p.Load(Board(4, new[,] { { 2, 4, 2, 4 }, { 4, 2, 4, 2 }, { 8, 4, 2, 4 }, { 16, 32, 16, 0 } }, 1234));
+            p.Load(Board(4, new[,] { { 2, 4, 2, 4 }, { 4, 2, 4, 2 }, { 8, 4, 2, 4 }, { 16, 32, 16, 0 } }, 1234, false, 211));
             yield return new WaitForSecondsRealtime(0.8f);
             p.Act(Dir.Right);
             yield return Shot("09-over", 2.4f);

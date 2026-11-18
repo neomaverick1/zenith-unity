@@ -1,0 +1,34 @@
+# Publishes a release when a version tag is pushed. The game is built with Unity on a build machine; the finished
+# files (Android APK, Google Play bundle, iPhone Xcode project) are kept on the `binaries` branch, the Xcode project
+# split into parts to fit GitHub's file size limit, and this job puts them together and attaches them.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: binaries
+          path: bin
+      - name: Put the Xcode project back together
+        working-directory: bin
+        run: |
+          cat Zenith-iOS-Xcode.zip.part-* > Zenith-iOS-Xcode.zip
+          sha256sum -c checksums.txt
+          ls -la
+      - name: Publish the release
+        working-directory: bin
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --title "Zenith ${GITHUB_REF_NAME#v} (Unity)" --notes-file notes.md \
+            Zenith.apk Zenith-Play.aab Zenith-iOS-Xcode.zip

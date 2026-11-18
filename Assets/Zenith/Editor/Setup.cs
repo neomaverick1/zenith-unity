@@ -129,9 +129,16 @@ namespace Zenith.EditorTools
             if (icon)
             {
                 PlayerSettings.SetIcons(NamedBuildTarget.Unknown, new[] { icon }, IconKind.Any);
-                var adaptive = PlayerSettings.GetPlatformIcons(NamedBuildTarget.Android, UnityEditor.Android.AndroidPlatformIconKind.Adaptive);
-                foreach (var a in adaptive) a.SetTextures(icon, fg ? fg : icon);
-                PlayerSettings.SetPlatformIcons(NamedBuildTarget.Android, UnityEditor.Android.AndroidPlatformIconKind.Adaptive, adaptive);
+                // Android's adaptive icon, when Android build support is installed
+                var kind = System.Type.GetType("UnityEditor.Android.AndroidPlatformIconKind, UnityEditor.Android.Extensions")
+                    ?.GetProperty("Adaptive", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                    ?.GetValue(null) as PlatformIconKind;
+                if (kind != null)
+                {
+                    var adaptive = PlayerSettings.GetPlatformIcons(NamedBuildTarget.Android, kind);
+                    foreach (var a in adaptive) a.SetTextures(icon, fg ? fg : icon);
+                    PlayerSettings.SetPlatformIcons(NamedBuildTarget.Android, kind, adaptive);
+                }
             }
 
             // Android: 64-bit, compiled ahead of time, as Google Play requires

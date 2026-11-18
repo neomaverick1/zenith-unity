@@ -79,6 +79,12 @@ namespace Zenith.EditorTools
 
         public static void IOS() => Run(BuildTarget.iOS, BuildTargetGroup.iOS, "Builds/iOS");
 
-        public static void Web() => Run(BuildTarget.WebGL, BuildTargetGroup.WebGL, "Builds/Web");
+        public static void Web()
+        {
+            PlayerSettings.WebGL.template = "PROJECT:Zenith";
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Brotli;
+            PlayerSettings.WebGL.decompressionFallback = true;
+            Run(BuildTarget.WebGL, BuildTargetGroup.WebGL, "Builds/Web");
+        }
     }
 }

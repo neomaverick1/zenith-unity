@@ -1,0 +1,29 @@
+# Publishes the release for the builds on this branch: the Android APK, the Google Play bundle and the iPhone
+# Xcode project (split into parts to fit GitHub's file size limit). Runs whenever new builds are pushed here.
+name: Publish builds
+
+on:
+  push:
+    branches: [binaries]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Put the Xcode project back together
+        run: |
+          cat Zenith-iOS-Xcode.zip.part-* > Zenith-iOS-Xcode.zip
+          sha256sum -c checksums.txt
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="$(cat VERSION)"
+          gh release delete "v$v" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "v$v" --repo "$GITHUB_REPOSITORY" --target main \
+            --title "Zenith $v (Unity)" --notes-file notes.md \
+            Zenith.apk Zenith-Play.aab Zenith-iOS-Xcode.zip

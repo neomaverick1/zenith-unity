@@ -156,6 +156,13 @@ namespace Zenith.EditorTools
             PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
             if (Directory.Exists("Assets/WebGLTemplates/Zenith")) PlayerSettings.WebGL.template = "PROJECT:Zenith";
 
+            // smaller, faster native code: strip what the game never calls
+            foreach (var t in new[] { NamedBuildTarget.Android, NamedBuildTarget.iOS, NamedBuildTarget.WebGL })
+            {
+                PlayerSettings.SetManagedStrippingLevel(t, ManagedStrippingLevel.High);
+                PlayerSettings.SetIl2CppCodeGeneration(t, Il2CppCodeGeneration.OptimizeSize);
+            }
+
             PlayerSettings.bundleVersion = "1.0.0";
             PlayerSettings.Android.bundleVersionCode = 1;
             PlayerSettings.iOS.buildNumber = "1";

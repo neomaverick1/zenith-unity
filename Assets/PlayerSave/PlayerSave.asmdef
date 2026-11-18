@@ -1,9 +1,0 @@
-{
-    "name": "PlayerSave",
-    "references": [
-        "Unity.Services.Core",
-        "Unity.Services.CloudSave",
-        "PlayerAuthentication"
-    ],
-    "autoReferenced": true
-}

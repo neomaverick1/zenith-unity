@@ -1,9 +1,0 @@
-{
-    "name": "LiveOps",
-    "references": [
-        "Unity.Services.Core",
-        "Unity.Services.RemoteConfig",
-        "PlayerAuthentication"
-    ],
-    "autoReferenced": true
-}

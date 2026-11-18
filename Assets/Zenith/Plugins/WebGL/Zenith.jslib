@@ -14,7 +14,7 @@ mergeInto(LibraryManager.library, {
     } catch (e) {}
   },
   ZenithPixelRatio: function () {
-    return window.devicePixelRatio || 1;
+    return window.zenithDpr || window.devicePixelRatio || 1;
   },
   ZenithIsMobile: function () {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)) ? 1 : 0;
